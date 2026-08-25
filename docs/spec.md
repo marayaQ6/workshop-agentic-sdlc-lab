@@ -1,6 +1,6 @@
 # Account health scoring
 
-**Status:** Draft
+**Status:** Approved
 
 ## What this does
 
@@ -107,6 +107,9 @@ produces the score and nothing else.
 
 | ID | Rule a builder follows | Passage it resolves | Case that would differ |
 | --- | --- | --- | --- |
+| D1 | The 40% seat-count decline is evaluated by comparing the latest month's seats to the immediately preceding month present for that account in the export. | "The latest month's seat count has fallen by 40% or more" | Account `vandelay` (2026-01: 10, 2026-02: 6, 2026-03: 5) drops 16.7% vs preceding month (no deduction) rather than 50% vs earliest month (deduct 4). |
+| D2 | An account scoring 5 is in tier AT RISK. The score ranges are AT RISK: 0–5, MEDIUM: 6–7, HEALTHY: 8–10. | "MEDIUM 5–7 / AT RISK 0–4" and "Any account scoring 5 or below should be surfaced to CS as at risk" | An account with a final score of 5 receives tier `"AT RISK"` rather than `"MEDIUM"`. |
+| D3 | A blank `seats_active` value in the CSV represents unrecorded usage and parses as `None` (`seats_active: int | None`). It does not trigger the seat-decline deduction. | "`account_id`, `month`, `logins` and `tickets_open` are always present and never blank" and `seats_active: int` | Account `acme` in `2026-03` has blank seats; it is parsed with `seats_active=None` and scores 10 (`tier="HEALTHY"`) rather than losing 4 points (`score=6`). |
 
 ## Open questions
 
